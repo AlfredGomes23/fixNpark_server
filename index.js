@@ -38,9 +38,12 @@ async function run() {
 
         
         // parkings api's
-        app.get('/parkings', (req, res) => {
+        app.get('/parkings', async (req, res) => {
             console.log(req.query);
-            res.send();
+            const cursor = parkings.find()
+            const result = await cursor.toArray();
+            console.log(result);
+            res.send(result);
         });
 
         app.post('/parking/add', async (req, res) => {
