@@ -39,10 +39,10 @@ async function run() {
         
         // parkings api's
         app.get('/parkings', async (req, res) => {
-            console.log(req.query);
-            const cursor = parkings.find()
-            const result = await cursor.toArray();
-            console.log(result);
+            console.log("body ",req.body);
+
+            const result = await parkings.find().toArray();
+            // console.log(result);
             res.send(result);
         });
 
