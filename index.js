@@ -39,12 +39,55 @@ async function run() {
         
         // parkings api's
         app.get('/parkings', async (req, res) => {
-            console.log("body ",req.body);
+            const { search, subscription, parkingType, wheels, provider } = req.query;
 
-            const result = await parkings.find().toArray();
-            // console.log(result);
-            res.send(result);
+            try {
+                const query = {};
+
+                // Address filter 
+                if (search && search.toLowerCase() !== "all") {
+                    query.address = { $regex: search, $options: "i" }; 
+                }
+
+                // Subscription filter
+                if (subscription) {
+                    query.subscription = subscription;
+                }
+
+                // Parking type filter
+                if (parkingType && parkingType !== "Both Single and Bulk") {
+                    query.parkingType = parkingType;
+                }
+
+                // Wheels filter
+                if (wheels && wheels !== "Any Number of Wheeler") {
+                    query.wheels = wheels;
+                }
+
+                // Provider filter
+                if (provider && provider !== "All Provider") {
+                    query.provider = provider;
+                }
+
+                console.log("Filters applied: ", query);
+
+                const result = await parkings.find(query).toArray();
+
+                res.send({ success: true, data: result });
+            } catch (error) {
+                console.error("Error fetching parkings: ", error);
+
+                const allData = await parkings.find().toArray();
+
+                res.send({
+                    success: false,
+                    error: "An error occurred while fetching filtered data.",
+                    data: allData, // Send all parking data for fallback
+                });
+            }
         });
+
+
 
         app.post('/parking/add', async (req, res) => {
             console.log(req.body);
