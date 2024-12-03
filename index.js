@@ -37,7 +37,6 @@ async function run() {
             res.send();
         })
 
-
         // parkings api's
         app.get('/parkings', async (req, res) => {
             const { search, subscription, parkingType, wheels, provider } = req.query;
